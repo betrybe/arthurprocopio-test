@@ -1,1 +1,7 @@
-// Coloque aqui suas actions
+const actions = {
+  AUTHENTICATE: 'AUTHENTICATE',
+  AUTHENTICATE_SUCCESS: 'AUTHENTICATE_SUCCESS',
+  AUTHENTICATE_FAILED: 'AUTHENTICATE_FAILED',
+};
+
+export default actions;
