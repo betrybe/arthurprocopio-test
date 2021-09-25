@@ -1,7 +1,1 @@
-const actions = {
-  AUTHENTICATE: 'AUTHENTICATE',
-  AUTHENTICATE_SUCCESS: 'AUTHENTICATE_SUCCESS',
-  AUTHENTICATE_FAILED: 'AUTHENTICATE_FAILED',
-};
-
-export default actions;
+export { authenticate, authError, authStart, authSuccess } from './user';
