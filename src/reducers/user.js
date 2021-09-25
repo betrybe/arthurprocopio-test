@@ -1,4 +1,4 @@
-import actions from '../actions';
+import actionTypes from '../actions/types';
 
 const initialState = {
   email: null,
@@ -9,16 +9,16 @@ const initialState = {
 
 function Reducer(state = initialState, action) {
   switch (action.type) {
-  case actions.AUTHENTICATE:
+  case actionTypes.AUTHENTICATE:
     return { ...state, state: 'loading' };
-  case actions.AUTHENTICATE_SUCCESS:
+  case actionTypes.AUTHENTICATE_SUCCESS:
     return {
       ...state,
-      email: action.payload.data,
+      email: action.payload.email,
       state: 'success',
       isAuthenticated: true,
     };
-  case actions.AUTHENTICATE_FAILED:
+  case actionTypes.AUTHENTICATE_FAILED:
     return {
       ...state,
       state: 'error',
