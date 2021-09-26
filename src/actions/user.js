@@ -20,13 +20,10 @@ export const authError = ({ error }) => ({
 });
 
 export const authenticate = ({ email }) => (dispatch) => {
-  dispatch(authStart());
-  axios
-    .post(`${process.env.REACT_APP_API_URL_PREFIX}/login`, { email })
-    .then(() => {
-      dispatch(authSuccess({ email }));
-    })
-    .catch((err) => {
-      dispatch(authError({ error: err }));
-    });
+  try {
+    // dispatch(authStart());
+    dispatch(authSuccess({ email }));
+  } catch (error) {
+    dispatch(authError({ error }));
+  }
 };
