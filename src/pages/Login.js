@@ -1,19 +1,41 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import PropTypes from 'prop-types';
+import validate from 'validate.js';
 import LoginForm from '../components/LoginForm';
 import { authenticate } from '../actions';
 import './Login.css';
+
+const schema = {
+  email: {
+    presence: { allowEmpty: false, message: 'Por favor, insira um email' },
+    email: {
+      message: 'Por favor insira um email valido',
+    },
+  },
+  password: {
+    presence: { allowEmpty: false, message: 'Por favor, insira uma senha' },
+    length: {
+      minimum: 6,
+      message: 'Senha precisa ter no mínimo 6 caractéres',
+    },
+  },
+};
 
 class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: '',
-      password: '',
+      isValid: false,
+      values: {
+        email: '',
+        password: '',
+      },
+      touched: {},
+      errors: {},
     };
     this.onAuthSubmit = props.onAuthSubmit;
-    this.isLoading = props.isLoading;
 
     this.handleChangeForm = this.handleChangeForm.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -21,26 +43,52 @@ class Login extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    const { email, password } = this.state;
-    console.log(email);
-    console.log(password);
-    this.onAuthSubmit(email);
+    const { values } = this.state;
+    const { history } = this.props;
+    this.onAuthSubmit(values.email);
+    history.push('/carteira');
   }
 
   handleChangeForm(event) {
     event.preventDefault();
-    this.setState({ [event.target.name]: event.target.value });
+    const { values, touched } = this.state;
+    const newValues = {
+      ...values,
+      [event.target.name]: event.target.value,
+    };
+    const newTouched = {
+      ...touched,
+      [event.target.name]: true,
+    };
+    const errors = validate(newValues, schema, { fullMessages: false });
+    this.setState({
+      isValid: !errors,
+      values: {
+        ...newValues,
+      },
+      touched: {
+        ...newTouched,
+      },
+      errors: errors || {},
+    });
   }
 
   render() {
+    const { values, touched, errors, isValid } = this.state;
+    const { isLoading } = this.props;
     return (
       <div className="wraper">
         <div className="form-container text-center">
           <LoginForm
             handleSubmit={ this.handleSubmit }
             handleChange={ this.handleChangeForm }
-            formValues={ this.state }
-            isLoading={ this.isLoading }
+            formState={ {
+              isValid,
+              values,
+              touched,
+              errors,
+            } }
+            isLoading={ isLoading }
           />
         </div>
       </div>
@@ -56,12 +104,14 @@ const mapDispatchToProps = (dispatch) => ({
 
 const mapStateToProps = (state) => ({
   email: state.user.email,
-  isLoading: state.user.loading,
+  isAuthenticated: state.user.isAuthenticated,
+  isLoading: state.user.state === 'loading',
 });
 
 Login.propTypes = {
   onAuthSubmit: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
+  history: PropTypes.object.isRequired,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Login));
