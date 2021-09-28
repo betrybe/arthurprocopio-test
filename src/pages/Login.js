@@ -35,7 +35,6 @@ class Login extends React.Component {
       touched: {},
       errors: {},
     };
-    this.onAuthSubmit = props.onAuthSubmit;
 
     this.handleChangeForm = this.handleChangeForm.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -44,8 +43,8 @@ class Login extends React.Component {
   handleSubmit(event) {
     event.preventDefault();
     const { values } = this.state;
-    const { history } = this.props;
-    this.onAuthSubmit(values.email);
+    const { history, onAuthSubmit } = this.props;
+    onAuthSubmit(values.email);
     history.push('/carteira');
   }
 
