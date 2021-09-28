@@ -1,1 +1,2 @@
-export { authenticate, authError, authStart, authSuccess } from './user';
+export { authenticate } from './user';
+export { addExpense, loadCurrencies } from './wallet';
