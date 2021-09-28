@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import './LoginForm.css';
-import TextField from './TextField';
+import TextField from './FormFields/TextField';
 
 function LoginForm(props) {
   const {
@@ -39,15 +39,16 @@ function LoginForm(props) {
         errorText={ errorText('password') }
         required
       />
-      {
-        isLoading && <div className="spinner-border" role="status" />
-      }
       <button
         className="btn btn-lg btn-primary btn-block"
         type="submit"
         disabled={ !formState.isValid || isLoading }
       >
-        Entrar
+        {
+          isLoading
+            ? <div className="spinner-border" role="status" />
+            : 'Entrar'
+        }
       </button>
     </form>
   );
