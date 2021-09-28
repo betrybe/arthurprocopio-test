@@ -1,15 +1,20 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import { LoginPage, WalletPage } from './pages';
+import { MainLayout, MinimalLayout } from './layouts';
 
 function App() {
   return (
     <Switch>
       <Route path="/carteira" exact>
-        <WalletPage />
+        <MainLayout>
+          <WalletPage />
+        </MainLayout>
       </Route>
       <Route path="/" exact>
-        <LoginPage />
+        <MinimalLayout>
+          <LoginPage />
+        </MinimalLayout>
       </Route>
     </Switch>
   );
