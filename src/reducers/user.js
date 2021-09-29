@@ -1,7 +1,7 @@
 import actionTypes from '../actions/types';
 
 const initialState = {
-  email: null,
+  email: '',
   state: 'idle', // loading or error
   isAuthenticated: false,
   error: null,
