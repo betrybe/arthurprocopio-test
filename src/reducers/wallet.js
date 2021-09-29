@@ -1,5 +1,5 @@
 import actionTypes from '../actions/types';
-import { getTotalFromExpenses } from '../helpers/expense';
+import getTotalFromExpenses from '../helpers/expense';
 
 const initialState = {
   currencies: [],
@@ -47,7 +47,9 @@ function Reducer(state = initialState, action) {
       currencies: [],
     };
   case actionTypes.DELETE_EXPENSE: {
-    const currentExpenses = state.expenses.filter((expense) => expense.id !== action.payload.id);
+    const currentExpenses = state.expenses.filter((expense) => (
+      expense.id !== action.payload.id
+    ));
     return {
       ...state,
       expenses: currentExpenses,

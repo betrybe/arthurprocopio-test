@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './LoginForm.css';
 import TextField from './FormFields/TextField';
+import LoadingSpinner from './LoadingSpinner';
 
 function LoginForm(props) {
   const {
@@ -10,8 +11,10 @@ function LoginForm(props) {
     formState,
     isLoading,
   } = props;
-  const hasError = (field) => (!!(formState.touched[field] && formState.errors[field]));
-  const errorText = (field) => (formState.errors[field] ? formState.errors[field][0] : '');
+  const hasError = (field) => (!!(formState.touched[field]
+    && formState.errors[field]));
+  const errorText = (field) => (formState.errors[field]
+    ? formState.errors[field][0] : '');
   return (
     <form className="form-signin" onSubmit={ handleSubmit }>
       {/* TODO add image <img className="mb-4" src="" alt="" width="72" height="72" /> */}
@@ -46,7 +49,7 @@ function LoginForm(props) {
       >
         {
           isLoading
-            ? <div className="spinner-border" role="status" />
+            ? <LoadingSpinner />
             : 'Entrar'
         }
       </button>
@@ -67,8 +70,14 @@ LoginForm.propTypes = {
       email: PropTypes.string,
       password: PropTypes.string,
     }),
-    touched: PropTypes.object,
-    errors: PropTypes.object,
+    touched: PropTypes.shape({
+      email: PropTypes.bool,
+      password: PropTypes.bool,
+    }),
+    errors: PropTypes.shape({
+      email: PropTypes.arrayOf(PropTypes.string),
+      password: PropTypes.arrayOf(PropTypes.string),
+    }),
   }).isRequired,
   isLoading: PropTypes.bool,
 };

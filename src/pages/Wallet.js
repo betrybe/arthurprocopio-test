@@ -33,7 +33,7 @@ class Wallet extends React.Component {
     this.state = {
       isValid: false,
       values: {
-        value: '0',
+        value: '',
         currency: 'USD',
         method: 'Dinheiro',
         tag: 'Alimentação',
@@ -86,7 +86,7 @@ class Wallet extends React.Component {
 
   render() {
     const { values, touched, errors, isValid, isLoading } = this.state;
-    const { currencies, email, totalExpenses, isLoading: isLoadingWallet } = this.props;
+    const { currencies, email, totalExpenses } = this.props;
     return (
       <div>
         <Header
@@ -121,11 +121,9 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 const mapStateToProps = (state) => ({
-  expenses: state.wallet.expenses,
   currencies: state.wallet.currencies,
   totalExpenses: state.wallet.totalExpensesReal,
   email: state.user.email,
-  isLoading: state.wallet.state === 'loading',
 });
 
 Wallet.defaultProps = {
@@ -134,12 +132,10 @@ Wallet.defaultProps = {
 
 Wallet.propTypes = {
   onAddExpense: PropTypes.func.isRequired,
-  expenses: PropTypes.array.isRequired,
   loadCurrencies: PropTypes.func.isRequired,
   currencies: PropTypes.arrayOf(PropTypes.string).isRequired,
   totalExpenses: PropTypes.string,
   email: PropTypes.string.isRequired,
-  isLoading: PropTypes.bool.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Wallet);

@@ -7,7 +7,8 @@ const CurrencyService = {
         delete data.USDT;
       }
       Object.keys(data).forEach((key) => {
-        data[key].name = data[key].name.split('/')[0];
+        const [fistName] = data[key].name.split('/');
+        data[key].name = fistName;
       });
     }
     return {

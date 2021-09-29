@@ -18,7 +18,7 @@ const authError = ({ error }) => ({
   },
 });
 
-export const authenticate = ({ email }) => (dispatch) => {
+const authenticate = ({ email }) => (dispatch) => {
   try {
     dispatch(authStart());
     dispatch(authSuccess({ email }));
@@ -26,3 +26,5 @@ export const authenticate = ({ email }) => (dispatch) => {
     dispatch(authError({ error }));
   }
 };
+
+export default authenticate;

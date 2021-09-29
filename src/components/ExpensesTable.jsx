@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { deleteExpense } from '../actions';
+import LoadingSpinner from './LoadingSpinner';
 
 function ExpensesTable() {
   const wallet = useSelector((state) => state.wallet);
@@ -8,6 +9,7 @@ function ExpensesTable() {
   const handleDelete = (id) => {
     dispatch(deleteExpense(id));
   };
+
   return (
     <table className="table table-striped table-dark">
       <thead>
@@ -26,7 +28,7 @@ function ExpensesTable() {
       <tbody>
         {
           wallet.state === 'loading'
-          && <tr><td colSpan="7"><div className="spinner-border" role="status" /></td></tr>
+          && <tr><td colSpan="7"><LoadingSpinner /></td></tr>
         }
         {wallet.expenses.map((expense, index) => (
           <tr key={ index }>
@@ -34,22 +36,26 @@ function ExpensesTable() {
             <td>{ expense.tag }</td>
             <td>{ expense.method }</td>
             <td>{ expense.value }</td>
-            <td>{ expense.exchangeRates[expense.currency]?.name ?? '0' }</td>
+            <td>{ expense.exchangeRates[expense.currency].name || '0' }</td>
             <td>
-              { Number(expense.exchangeRates[expense.currency]?.ask ?? '0').toFixed(2) }
+              { Number(expense.exchangeRates[expense.currency].ask || '0').toFixed(2) }
             </td>
             <td>
-              { Number(Number(expense.value) * Number(expense.exchangeRates[expense.currency]?.ask ?? '0')).toFixed(2) }
+              { Number(Number(expense.value)
+              * Number(expense.exchangeRates[expense.currency].ask || '0')).toFixed(2) }
             </td>
             <td>Real</td>
             <td>
               <button
+                type="button"
                 className="btn btn-secondary"
                 data-testid="edit-btn"
               >
                 Editar
               </button>
+              {' '}
               <button
+                type="button"
                 className="btn btn-danger"
                 data-testid="delete-btn"
                 onClick={ () => handleDelete(expense.id) }

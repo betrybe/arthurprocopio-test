@@ -11,7 +11,8 @@ function AddExpenseForm(props) {
     currencies,
   } = props;
   const hasError = (field) => (!!(formState.touched[field] && formState.errors[field]));
-  const errorText = (field) => (formState.errors[field] ? formState.errors[field][0] : '');
+  const errorText = (field) => (formState.errors[field]
+    ? formState.errors[field][0] : '');
 
   return (
     <form
@@ -129,8 +130,20 @@ AddExpenseForm.propTypes = {
       tag: PropTypes.string,
       description: PropTypes.string,
     }),
-    touched: PropTypes.object,
-    errors: PropTypes.object,
+    touched: PropTypes.shape({
+      value: PropTypes.bool,
+      currency: PropTypes.bool,
+      method: PropTypes.bool,
+      tag: PropTypes.bool,
+      description: PropTypes.bool,
+    }),
+    errors: PropTypes.shape({
+      value: PropTypes.arrayOf(PropTypes.string),
+      currency: PropTypes.arrayOf(PropTypes.string),
+      method: PropTypes.arrayOf(PropTypes.string),
+      tag: PropTypes.arrayOf(PropTypes.string),
+      description: PropTypes.arrayOf(PropTypes.string),
+    }),
   }).isRequired,
   currencies: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
