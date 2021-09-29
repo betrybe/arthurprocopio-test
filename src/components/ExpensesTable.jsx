@@ -1,8 +1,13 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { deleteExpense } from '../actions';
 
 function ExpensesTable() {
   const wallet = useSelector((state) => state.wallet);
+  const dispatch = useDispatch();
+  const handleDelete = (id) => {
+    dispatch(deleteExpense(id));
+  };
   return (
     <table className="table table-striped table-dark">
       <thead>
@@ -29,26 +34,25 @@ function ExpensesTable() {
             <td>{ expense.tag }</td>
             <td>{ expense.method }</td>
             <td>{ expense.value }</td>
-            <td>{ expense.exchangeRates[expense.currency].name }</td>
+            <td>{ expense.exchangeRates[expense.currency]?.name ?? '0' }</td>
             <td>
-              { Number(expense.exchangeRates[expense.currency].ask).toFixed(2) }
+              { Number(expense.exchangeRates[expense.currency]?.ask ?? '0').toFixed(2) }
             </td>
             <td>
-              { (expense.value * Number(expense.exchangeRates[expense.currency].ask)).toFixed(2) }
+              { Number(Number(expense.value) * Number(expense.exchangeRates[expense.currency]?.ask ?? '0')).toFixed(2) }
             </td>
             <td>Real</td>
             <td>
               <button
                 className="btn btn-secondary"
-                // disabled={ !formState.isValid || isLoadingCurrencies }
                 data-testid="edit-btn"
               >
                 Editar
               </button>
               <button
                 className="btn btn-danger"
-                // disabled={ !formState.isValid || isLoadingCurrencies }
                 data-testid="delete-btn"
+                onClick={ () => handleDelete(expense.id) }
               >
                 Deletar
               </button>
