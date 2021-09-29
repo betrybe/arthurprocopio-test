@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import PropTypes from 'prop-types';
-import validate from 'validate.js';
+import validate from '../helpers/validate';
 import LoginForm from '../components/LoginForm';
 import { authenticate } from '../actions';
 import './Login.css';
@@ -58,7 +58,7 @@ class Login extends React.Component {
       ...touched,
       [event.target.name]: true,
     };
-    const errors = validate(newValues, schema, { fullMessages: false });
+    const errors = validate(newValues, schema);
     this.setState({
       isValid: !errors,
       values: {

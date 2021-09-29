@@ -1,7 +1,7 @@
 import React from 'react';
-import validate from 'validate.js';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import validate from '../helpers/validate';
 import AddExpenseForm from '../components/AddExpenseForm';
 import ExpensesTable from '../components/ExpensesTable';
 import Header from '../components/Header';
