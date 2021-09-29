@@ -1,12 +1,13 @@
 import actionTypes from '../actions/types';
+import { getTotalFromExpenses } from '../helpers/expense';
 
 const initialState = {
-  currencies: {},
+  currencies: [],
   expenses: [],
   state: 'idle', // loading or error
   error: null,
   idIncrement: 0,
-  totalExpensesReal: 0,
+  totalExpensesReal: '0',
 };
 
 function Reducer(state = initialState, action) {
@@ -15,7 +16,7 @@ function Reducer(state = initialState, action) {
     return { ...state, state: 'loading' };
   case actionTypes.ADD_EXPENSE_SUCCESS: {
     const newExpense = action.payload.expense;
-    newExpense.id = state.idIncrement + 1;
+    newExpense.id = state.idIncrement;
     const currentExpenses = state.expenses;
     currentExpenses.push(newExpense);
     return {
@@ -23,10 +24,7 @@ function Reducer(state = initialState, action) {
       expenses: currentExpenses,
       state: 'success',
       idIncrement: state.idIncrement + 1,
-      totalExpensesReal: Number(currentExpenses.reduce((acumulator, actual) => {
-        const exchangeRate = actual.exchangeRates[actual.currency].ask;
-        return acumulator + (actual.value * exchangeRate);
-      }, 0)).toFixed(2),
+      totalExpensesReal: getTotalFromExpenses(currentExpenses),
     };
   }
   case actionTypes.ADD_EXPENSE_FAILED:
@@ -48,6 +46,14 @@ function Reducer(state = initialState, action) {
       error: action.payload.error,
       currencies: [],
     };
+  case actionTypes.DELETE_EXPENSE: {
+    const currentExpenses = state.expenses.filter((expense) => expense.id !== action.payload.id);
+    return {
+      ...state,
+      expenses: currentExpenses,
+      totalExpensesReal: getTotalFromExpenses(currentExpenses),
+    };
+  }
   default:
     return state;
   }

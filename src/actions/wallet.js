@@ -51,8 +51,18 @@ export const loadCurrencies = () => async (dispatch) => {
   try {
     dispatch(actionStartFetch());
     const { data } = await CurrencyService.getAll();
-    dispatch(loadCurrenciesSuccess(data));
+    const currenciesArray = Object.keys(data);
+    dispatch(loadCurrenciesSuccess(currenciesArray));
   } catch (error) {
     dispatch(loadCurrenciesError({ error }));
   }
 };
+
+export const deleteExpense = (id) => (
+  {
+    type: actionTypes.DELETE_EXPENSE,
+    payload: {
+      id,
+    },
+  }
+);

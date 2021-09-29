@@ -1,2 +1,2 @@
 export { authenticate } from './user';
-export { addExpense, loadCurrencies } from './wallet';
+export { addExpense, loadCurrencies, deleteExpense } from './wallet';
