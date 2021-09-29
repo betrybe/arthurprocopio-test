@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import AddExpenseForm from '../components/AddExpenseForm';
 import ExpensesTable from '../components/ExpensesTable';
+import Header from '../components/Header';
 import { addExpense, loadCurrencies } from '../actions';
 
 const schema = {
@@ -26,16 +27,16 @@ const schema = {
     presence: { allowEmpty: true },
   },
 };
-class Wallet extends React.PureComponent {
+class Wallet extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       isValid: false,
       values: {
-        value: '',
-        currency: '',
-        method: '',
-        tag: '',
+        value: '0',
+        currency: 'USD',
+        method: 'Dinheiro',
+        tag: 'Alimentação',
         description: '',
       },
       touched: {},
@@ -62,13 +63,9 @@ class Wallet extends React.PureComponent {
   handleChangeForm(event) {
     event.preventDefault();
     const { values, touched } = this.state;
-    let newValue = event.target.value;
-    if (event.target.name === 'value') {
-      newValue = Number.parseFloat(newValue);
-    }
     const newValues = {
       ...values,
-      [event.target.name]: newValue,
+      [event.target.name]: event.target.value,
     };
     const newTouched = {
       ...touched,
@@ -88,9 +85,14 @@ class Wallet extends React.PureComponent {
   }
 
   render() {
-    const { values, touched, errors, isValid, isLoading, currencies } = this.state;
+    const { values, touched, errors, isValid, isLoading } = this.state;
+    const { currencies, email, totalExpenses, isLoading: isLoadingWallet } = this.props;
     return (
       <div>
+        <Header
+          email={ email }
+          totalExpenses={ totalExpenses }
+        />
         <AddExpenseForm
           handleSubmit={ this.handleSubmit }
           handleChange={ this.handleChangeForm }
@@ -120,11 +122,24 @@ const mapDispatchToProps = (dispatch) => ({
 
 const mapStateToProps = (state) => ({
   expenses: state.wallet.expenses,
+  currencies: state.wallet.currencies,
+  totalExpenses: state.wallet.totalExpensesReal,
+  email: state.user.email,
+  isLoading: state.wallet.state === 'loading',
 });
+
+Wallet.defaultProps = {
+  totalExpenses: '0',
+};
 
 Wallet.propTypes = {
   onAddExpense: PropTypes.func.isRequired,
   expenses: PropTypes.array.isRequired,
+  loadCurrencies: PropTypes.func.isRequired,
+  currencies: PropTypes.arrayOf(PropTypes.string).isRequired,
+  totalExpenses: PropTypes.string,
+  email: PropTypes.string.isRequired,
+  isLoading: PropTypes.bool.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Wallet);

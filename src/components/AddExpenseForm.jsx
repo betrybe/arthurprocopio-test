@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import './AddExpenseForm.css';
-import { useSelector } from 'react-redux';
 import TextField from './FormFields/TextField';
 
 function AddExpenseForm(props) {
@@ -9,11 +8,10 @@ function AddExpenseForm(props) {
     handleSubmit,
     handleChange,
     formState,
+    currencies,
   } = props;
   const hasError = (field) => (!!(formState.touched[field] && formState.errors[field]));
   const errorText = (field) => (formState.errors[field] ? formState.errors[field][0] : '');
-
-  const wallet = useSelector((state) => state.wallet);
 
   return (
     <form
@@ -48,12 +46,11 @@ function AddExpenseForm(props) {
             value={ formState.values.currency || '' }
             data-testid="currency-input"
           >
-            {
-              typeof wallet.currencies === 'object'
-            && Object.keys(wallet.currencies).map((currencyKey, index) => (
-              <option key={ index } value={ currencyKey }>{currencyKey}</option>
-            ))
-            }
+            {currencies.map((currency) => (
+              <option key={ currency } value={ currency }>
+                {currency}
+              </option>
+            ))}
           </select>
         </label>
       </div>
@@ -112,7 +109,6 @@ function AddExpenseForm(props) {
         <button
           type="submit"
           className="btn btn-primary"
-          disabled={ !formState.isValid }
         >
           Adicionar despesa
         </button>
@@ -120,8 +116,6 @@ function AddExpenseForm(props) {
     </form>
   );
 }
-
-AddExpenseForm.defaultProps = {};
 
 AddExpenseForm.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
@@ -138,6 +132,7 @@ AddExpenseForm.propTypes = {
     touched: PropTypes.object,
     errors: PropTypes.object,
   }).isRequired,
+  currencies: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 export default AddExpenseForm;
