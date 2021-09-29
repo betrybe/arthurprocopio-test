@@ -4,7 +4,7 @@ const getTotalFromExpenses = (expenses) => (
       Number(actual.value)
     * Number(actual.exchangeRates[actual.currency].ask)
     )
-  ), 0).toFixed(2))
+  ), 0)).toFixed(2)
 );
 
 export default getTotalFromExpenses;

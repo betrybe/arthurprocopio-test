@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
+import { Redirect } from 'react-router';
 import PropTypes from 'prop-types';
 import validate from 'validate.js';
 import LoginForm from '../components/LoginForm';
@@ -43,9 +43,8 @@ class Login extends React.Component {
   handleSubmit(event) {
     event.preventDefault();
     const { values } = this.state;
-    const { history, onAuthSubmit } = this.props;
+    const { onAuthSubmit } = this.props;
     onAuthSubmit(values.email);
-    history.push('/carteira');
   }
 
   handleChangeForm(event) {
@@ -74,23 +73,26 @@ class Login extends React.Component {
 
   render() {
     const { values, touched, errors, isValid } = this.state;
-    const { isLoading } = this.props;
+    const { isLoading, isAuthenticated } = this.props;
     return (
-      <div className="wraper">
-        <div className="form-container text-center">
-          <LoginForm
-            handleSubmit={ this.handleSubmit }
-            handleChange={ this.handleChangeForm }
-            formState={ {
-              isValid,
-              values,
-              touched,
-              errors,
-            } }
-            isLoading={ isLoading }
-          />
+      <>
+        {isAuthenticated && <Redirect to="/carteira" /> }
+        <div className="wraper">
+          <div className="form-container text-center">
+            <LoginForm
+              handleSubmit={ this.handleSubmit }
+              handleChange={ this.handleChangeForm }
+              formState={ {
+                isValid,
+                values,
+                touched,
+                errors,
+              } }
+              isLoading={ isLoading }
+            />
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 }
@@ -110,9 +112,7 @@ const mapStateToProps = (state) => ({
 Login.propTypes = {
   onAuthSubmit: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
-  // withRouter history has a type specified as object acording to the react-router documentation
-  // eslint-disable-next-line react/forbid-prop-types
-  history: PropTypes.object.isRequired,
+  isAuthenticated: PropTypes.bool.isRequired,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Login));
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
