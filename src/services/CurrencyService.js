@@ -1,8 +1,7 @@
-import axios from 'axios';
-
 const CurrencyService = {
   getAll: async () => {
-    const { data, status, statusText } = await axios.get('https://economia.awesomeapi.com.br/json/all');
+    const response = await fetch('https://economia.awesomeapi.com.br/json/all');
+    const data = await response.json();
     if (typeof data === 'object') {
       if (Object.prototype.hasOwnProperty.call(data, 'USDT')) {
         delete data.USDT;
@@ -13,17 +12,18 @@ const CurrencyService = {
     }
     return {
       data,
-      status,
-      statusText,
+      status: response.status,
+      statusText: response.statusText,
     };
   },
 
   getByCode: async (currencyCode) => {
-    const { data, status, statusText } = await axios.get(`https://economia.awesomeapi.com.br/json/${currencyCode}`);
+    const response = await fetch(`https://economia.awesomeapi.com.br/json/${currencyCode}`);
+    const data = await response.json();
     return {
       data,
-      status,
-      statusText,
+      status: response.status,
+      statusText: response.statusText,
     };
   },
 };
