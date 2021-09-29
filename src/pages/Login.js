@@ -110,6 +110,8 @@ const mapStateToProps = (state) => ({
 Login.propTypes = {
   onAuthSubmit: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
+  // withRouter history has a type specified as object acording to the react-router documentation
+  // eslint-disable-next-line react/forbid-prop-types
   history: PropTypes.object.isRequired,
 };
 
