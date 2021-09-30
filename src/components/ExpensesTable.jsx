@@ -1,9 +1,11 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { deleteExpense } from '../actions';
 import LoadingSpinner from './LoadingSpinner';
 
-function ExpensesTable() {
+function ExpensesTable(props) {
+  const { handleStartEditing } = props;
   const wallet = useSelector((state) => state.wallet);
   const dispatch = useDispatch();
   const handleDelete = (id) => {
@@ -50,6 +52,7 @@ function ExpensesTable() {
                 type="button"
                 className="btn btn-secondary"
                 data-testid="edit-btn"
+                onClick={ () => handleStartEditing(expense.id) }
               >
                 Editar
               </button>
@@ -69,5 +72,9 @@ function ExpensesTable() {
     </table>
   );
 }
+
+ExpensesTable.propTypes = {
+  handleStartEditing: PropTypes.func.isRequired,
+};
 
 export default ExpensesTable;
