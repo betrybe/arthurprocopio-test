@@ -1,14 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './AddExpenseForm.css';
+import './ExpenseForm.css';
 import TextField from './FormFields/TextField';
 
-function AddExpenseForm(props) {
+function ExpenseForm(props) {
   const {
     handleSubmit,
     handleChange,
     formState,
     currencies,
+    isEditing,
   } = props;
   const hasError = (field) => (!!(formState.touched[field] && formState.errors[field]));
   const errorText = (field) => (formState.errors[field]
@@ -111,14 +112,20 @@ function AddExpenseForm(props) {
           type="submit"
           className="btn btn-primary"
         >
-          Adicionar despesa
+          {
+            isEditing ? 'Editar despesa' : 'Adicionar despesa'
+          }
         </button>
       </div>
     </form>
   );
 }
 
-AddExpenseForm.propTypes = {
+ExpenseForm.defaultProps = {
+  isEditing: false,
+};
+
+ExpenseForm.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
   handleChange: PropTypes.func.isRequired,
   formState: PropTypes.shape({
@@ -145,7 +152,8 @@ AddExpenseForm.propTypes = {
       description: PropTypes.arrayOf(PropTypes.string),
     }),
   }).isRequired,
+  isEditing: PropTypes.bool,
   currencies: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
-export default AddExpenseForm;
+export default ExpenseForm;
