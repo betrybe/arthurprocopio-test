@@ -6,56 +6,44 @@ const actionStartFetch = () => ({
 });
 
 const addExpenseSuccess = (expense) => ({
-  type: actionTypes.ADD_EXPENSE_SUCCESS,
+  type: actionTypes.ADD_EXPENSE,
   payload: {
     expense,
   },
 });
 
 const loadCurrenciesSuccess = (currencies) => ({
-  type: actionTypes.LOAD_CURRENCIES_SUCCESS,
+  type: actionTypes.LOAD_CURRENCIES,
   payload: {
     currencies,
   },
 });
 
-const loadCurrenciesError = ({ error }) => ({
-  type: actionTypes.LOAD_CURRENCIES_FAILED,
-  payload: {
-    error,
-  },
-});
-
-const addExpenseError = ({ error }) => ({
-  type: actionTypes.ADD_EXPENSE_FAILED,
-  payload: {
-    error,
-  },
-});
-
 export const addExpense = (expense) => async (dispatch) => {
-  try {
-    dispatch(actionStartFetch());
-    const { data } = await CurrencyService.getAll();
-    const newExpense = {
-      ...expense,
-      exchangeRates: data,
-    };
-    dispatch(addExpenseSuccess(newExpense));
-  } catch (error) {
-    dispatch(addExpenseError({ error }));
-  }
+  dispatch(actionStartFetch());
+  const { data } = await CurrencyService.getAll();
+  const newExpense = {
+    ...expense,
+    exchangeRates: data,
+  };
+  dispatch(addExpenseSuccess(newExpense));
+};
+
+export const editExpense = (expense) => (dispatch) => {
+  dispatch({
+    type: actionTypes.EDIT_EXPENSE,
+    payload: {
+      expense,
+      id: expense.id,
+    },
+  });
 };
 
 export const loadCurrencies = () => async (dispatch) => {
-  try {
-    dispatch(actionStartFetch());
-    const { data } = await CurrencyService.getAll();
-    const currenciesArray = Object.keys(data);
-    dispatch(loadCurrenciesSuccess(currenciesArray));
-  } catch (error) {
-    dispatch(loadCurrenciesError({ error }));
-  }
+  dispatch(actionStartFetch());
+  const { data } = await CurrencyService.getAll();
+  const currenciesArray = Object.keys(data);
+  dispatch(loadCurrenciesSuccess(currenciesArray));
 };
 
 export const deleteExpense = (id) => (
