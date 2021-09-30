@@ -14,7 +14,7 @@ function Reducer(state = initialState, action) {
   switch (action.type) {
   case actionTypes.START_WALLET_FETCH:
     return { ...state, state: 'loading' };
-  case actionTypes.ADD_EXPENSE_SUCCESS: {
+  case actionTypes.ADD_EXPENSE: {
     const newExpense = action.payload.expense;
     newExpense.id = state.idIncrement;
     const currentExpenses = state.expenses;
@@ -27,24 +27,11 @@ function Reducer(state = initialState, action) {
       totalExpensesReal: getTotalFromExpenses(currentExpenses),
     };
   }
-  case actionTypes.ADD_EXPENSE_FAILED:
-    return {
-      ...state,
-      state: 'error',
-      error: action.payload.error,
-    };
-  case actionTypes.LOAD_CURRENCIES_SUCCESS:
+  case actionTypes.LOAD_CURRENCIES:
     return {
       ...state,
       state: 'success',
       currencies: action.payload.currencies,
-    };
-  case actionTypes.LOAD_CURRENCIES_FAILED:
-    return {
-      ...state,
-      state: 'error',
-      error: action.payload.error,
-      currencies: [],
     };
   case actionTypes.DELETE_EXPENSE: {
     const currentExpenses = state.expenses.filter((expense) => (
@@ -54,6 +41,20 @@ function Reducer(state = initialState, action) {
       ...state,
       expenses: currentExpenses,
       totalExpensesReal: getTotalFromExpenses(currentExpenses),
+    };
+  }
+  case actionTypes.EDIT_EXPENSE: {
+    const replaceExpenses = state.expenses.map((expense) => (
+      (expense.id === action.payload.id)
+        ? {
+          ...action.payload.expense,
+          exchangeRates: expense.exchangeRates,
+        } : expense
+    ));
+    return {
+      ...state,
+      expenses: replaceExpenses,
+      totalExpensesReal: getTotalFromExpenses(replaceExpenses),
     };
   }
   default:
