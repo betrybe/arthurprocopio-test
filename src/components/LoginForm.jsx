@@ -17,7 +17,6 @@ function LoginForm(props) {
     ? formState.errors[field][0] : '');
   return (
     <form className="form-signin" onSubmit={ handleSubmit }>
-      {/* TODO add image <img className="mb-4" src="" alt="" width="72" height="72" /> */}
       <TextField
         type="email"
         id="inputEmail"

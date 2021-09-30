@@ -7,7 +7,7 @@ function Header(props) {
   const debtText = <span data-testid="total-field">{ totalExpenses }</span>;
 
   return (
-    <nav className="navbar navbar-light bg-light" aria-label="Fourth navbar example">
+    <nav className="navbar navbar-light bg-light">
       <div className="container-fluid">
         <a className="navbar-brand" href="/">
           <img
