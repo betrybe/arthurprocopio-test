@@ -2,10 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import validate from '../helpers/validate';
-import AddExpenseForm from '../components/AddExpenseForm';
+import ExpenseForm from '../components/ExpenseForm';
 import ExpensesTable from '../components/ExpensesTable';
 import Header from '../components/Header';
-import { addExpense, loadCurrencies } from '../actions';
+import { addExpense, loadCurrencies, editExpense } from '../actions';
 
 const schema = {
   value: {
@@ -27,6 +27,14 @@ const schema = {
     presence: { allowEmpty: true },
   },
 };
+
+const initialValues = {
+  value: '',
+  currency: 'USD',
+  method: 'Dinheiro',
+  tag: 'Alimentação',
+  description: '',
+};
 class Wallet extends React.Component {
   constructor(props) {
     super(props);
@@ -42,10 +50,13 @@ class Wallet extends React.Component {
       touched: {},
       errors: {},
       isLoading: true,
+      isEditing: false,
+      editingId: 0,
     };
 
     this.handleChangeForm = this.handleChangeForm.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.startEditing = this.startEditing.bind(this);
   }
 
   componentDidMount() {
@@ -55,9 +66,37 @@ class Wallet extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    const { values } = this.state;
-    const { onAddExpense } = this.props;
-    onAddExpense(values);
+    const { values, isEditing, editingId } = this.state;
+    const { onAddExpense, onEditExpense } = this.props;
+    if (isEditing) {
+      onEditExpense({ ...values, id: editingId });
+    } else {
+      onAddExpense(values);
+    }
+    this.resetForm();
+  }
+
+  resetForm() {
+    this.setState({
+      values: initialValues,
+      isEditing: false,
+    });
+  }
+
+  startEditing(expenseId) {
+    const { expenses } = this.props;
+    const expenseToEdit = expenses.find((expense) => expense.id === expenseId);
+    this.setState({
+      isEditing: true,
+      values: {
+        value: expenseToEdit.value,
+        currency: expenseToEdit.currency,
+        method: expenseToEdit.method,
+        tag: expenseToEdit.tag,
+        description: expenseToEdit.description,
+      },
+      editingId: expenseId,
+    });
   }
 
   handleChangeForm(event) {
@@ -85,7 +124,7 @@ class Wallet extends React.Component {
   }
 
   render() {
-    const { values, touched, errors, isValid, isLoading } = this.state;
+    const { values, touched, errors, isValid, isLoading, isEditing } = this.state;
     const { currencies, email, totalExpenses } = this.props;
     return (
       <div>
@@ -93,7 +132,7 @@ class Wallet extends React.Component {
           email={ email }
           totalExpenses={ totalExpenses }
         />
-        <AddExpenseForm
+        <ExpenseForm
           handleSubmit={ this.handleSubmit }
           handleChange={ this.handleChangeForm }
           formState={ {
@@ -104,8 +143,11 @@ class Wallet extends React.Component {
           } }
           currencies={ currencies }
           isLoading={ isLoading }
+          isEditing={ isEditing }
         />
-        <ExpensesTable />
+        <ExpensesTable
+          handleStartEditing={ this.startEditing }
+        />
       </div>
     );
   }
@@ -115,6 +157,9 @@ const mapDispatchToProps = (dispatch) => ({
   onAddExpense: (expense) => {
     dispatch(addExpense(expense));
   },
+  onEditExpense: (expense) => {
+    dispatch(editExpense(expense));
+  },
   loadCurrencies: () => {
     dispatch(loadCurrencies());
   },
@@ -122,6 +167,7 @@ const mapDispatchToProps = (dispatch) => ({
 
 const mapStateToProps = (state) => ({
   currencies: state.wallet.currencies,
+  expenses: state.wallet.expenses,
   totalExpenses: state.wallet.totalExpensesReal,
   email: state.user.email,
 });
@@ -132,10 +178,12 @@ Wallet.defaultProps = {
 
 Wallet.propTypes = {
   onAddExpense: PropTypes.func.isRequired,
+  onEditExpense: PropTypes.func.isRequired,
   loadCurrencies: PropTypes.func.isRequired,
   currencies: PropTypes.arrayOf(PropTypes.string).isRequired,
   totalExpenses: PropTypes.string,
   email: PropTypes.string.isRequired,
+  expenses: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Wallet);
