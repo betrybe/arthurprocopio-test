@@ -6,7 +6,7 @@ function validateNumber({ message }, value) {
 }
 
 function validateEmail({ message }, value) {
-  if (/^([a-z\d-]+)@([a-z\d-]+)\.([a-z]+)$/.test(value.toLowerCase())) {
+  if (/^([a-z\d.]+)@([a-z\d-]+)\.([a-z]+)$/.test(value.toLowerCase())) {
     return undefined;
   }
   return message;
