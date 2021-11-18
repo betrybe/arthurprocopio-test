@@ -1,0 +1,84 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+import './LoginForm.css';
+import TextField from './FormFields/TextField';
+import LoadingSpinner from './LoadingSpinner';
+
+function LoginForm(props) {
+  const {
+    handleSubmit,
+    handleChange,
+    formState,
+    isLoading,
+  } = props;
+  const hasError = (field) => (!!(formState.touched[field]
+    && formState.errors[field]));
+  const errorText = (field) => (formState.errors[field]
+    ? formState.errors[field][0] : '');
+  return (
+    <form className="form-signin" onSubmit={ handleSubmit }>
+      <TextField
+        type="email"
+        id="inputEmail"
+        name="email"
+        placeholder="Email"
+        onChange={ handleChange }
+        value={ formState.values.email || '' }
+        dataTestId="email-input"
+        hasError={ hasError('email') }
+        errorText={ errorText('email') }
+        required
+      />
+      <TextField
+        type="password"
+        id="inputPassword"
+        name="password"
+        placeholder="Senha"
+        onChange={ handleChange }
+        value={ formState.values.password || '' }
+        dataTestId="password-input"
+        hasError={ hasError('password') }
+        errorText={ errorText('password') }
+        required
+      />
+      <button
+        className="btn btn-lg btn-primary btn-block"
+        type="submit"
+        disabled={ !formState.isValid || isLoading }
+      >
+        {
+          isLoading
+            ? <LoadingSpinner />
+            : 'Entrar'
+        }
+      </button>
+    </form>
+  );
+}
+
+LoginForm.defaultProps = {
+  isLoading: false,
+};
+
+LoginForm.propTypes = {
+  handleSubmit: PropTypes.func.isRequired,
+  handleChange: PropTypes.func.isRequired,
+  formState: PropTypes.shape({
+    isValid: PropTypes.bool,
+    values: PropTypes.shape({
+      email: PropTypes.string,
+      password: PropTypes.string,
+    }),
+    touched: PropTypes.shape({
+      email: PropTypes.bool,
+      password: PropTypes.bool,
+    }),
+    errors: PropTypes.shape({
+      email: PropTypes.arrayOf(PropTypes.string),
+      password: PropTypes.arrayOf(PropTypes.string),
+    }),
+  }).isRequired,
+  isLoading: PropTypes.bool,
+};
+
+export default LoginForm;
